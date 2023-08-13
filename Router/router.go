@@ -1,14 +1,17 @@
 package router
 
 import (
-	dbConnection "github.com/Armaan-Singh-Dhillon/FurnitureStore/MongoConnector"
+	citiesRouterMethods "github.com/Armaan-Singh-Dhillon/FurnitureStore/RouterMethods/Cities"
+	productRouterMethods "github.com/Armaan-Singh-Dhillon/FurnitureStore/RouterMethods/Products"
+	userRouterMethods "github.com/Armaan-Singh-Dhillon/FurnitureStore/RouterMethods/Users"
 	"github.com/gorilla/mux"
 )
 
 func Router() *mux.Router {
 	router := mux.NewRouter()
-
-	router.HandleFunc("/api/getall",dbConnection.GetProducts).Methods("GET")
+	productRouterMethods.ProductRouterMethods(router)
+	userRouterMethods.UserRouterMethods(router)
+	citiesRouterMethods.CitiesRouterMethods(router)
 
 	return router
 }
