@@ -57,16 +57,16 @@ func insertProduct(product models.Product) {
 	}
 }
 
-func getProductById(stringId string) primitive.M {
+func getProductById(stringId string) (primitive.M, error) {
 	id, err := primitive.ObjectIDFromHex(stringId)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	var result bson.M
 
 	collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&result)
 
-	return result
+	return result, nil
 
 }
 
@@ -76,9 +76,9 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
 	name := r.URL.Query().Get("name")
 	category := r.URL.Query().Get("category")
-	sortPrice := r.URL.Query().Get("sortPrice") 
+	sortPrice := r.URL.Query().Get("sortPrice")
 	sortPriceInt, err := strconv.Atoi(sortPrice)
-	if err!=nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	products := getAllProducts(name, category, sortPriceInt)
@@ -104,7 +104,13 @@ func GetProductById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "GET")
 
 	params := mux.Vars(r)
-	singleProduct := getProductById(params["id"])
+	singleProduct, err := getProductById(params["id"])
+	if err != nil {
+
+		json.NewEncoder(w).Encode("provided id is not in correct format")
+		return
+	}
+
 	json.NewEncoder(w).Encode(singleProduct)
 
 }
