@@ -31,7 +31,7 @@ type Specifications struct {
 
 type Product struct {
 	ID               string         `json:"_id"`
-	Owner            Owner          `json:"Owner"`
+	Owner            Owner          `json:"owner"`
 	V                int            `json:"__v"`
 	AverageRating    float64        `json:"averageRating"`
 	Category         string         `json:"category"`
